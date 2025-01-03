@@ -1,11 +1,12 @@
 name: Test
 on:
-  push:
-    paths-ignore:
-      - '**.md'
-  pull_request:
-    paths-ignore:
-      - '**.md'
+  # push:
+  #   paths-ignore:
+  #     - '**.md'
+  # pull_request:
+  #   paths-ignore:
+  #     - '**.md'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -13,7 +14,7 @@ jobs:
 
     strategy:
       matrix:
-        runs-on: [ubuntu-latest, macos-latest, windows-latest]
+        runs-on: [ubuntu-latest] # , macos-latest, windows-latest]
       fail-fast: false
 
     runs-on: ${{ matrix.runs-on }}

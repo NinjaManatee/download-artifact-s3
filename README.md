@@ -1,19 +1,10 @@
-# `@actions/download-artifact`
+# `download-artifact-s3`
 
-> [!WARNING]
-> actions/download-artifact@v3 is scheduled for deprecation on **November 30, 2024**. [Learn more.](https://github.blog/changelog/2024-04-16-deprecation-notice-v3-of-the-artifact-actions/)
-> Similarly, v1/v2 are scheduled for deprecation on **June 30, 2024**.
-> Please update your workflow to use v4 of the artifact actions.
-> This deprecation will not impact any existing versions of GitHub Enterprise Server being used by customers.
+Download Actions Artifacts to AWS s3 from your Workflow Runs. Internally powered by the [artifact-s3](https://github.com/NinjaManat33/artifact-s3) package.
 
-Download [Actions Artifacts](https://docs.github.com/en/actions/using-workflows/storing-workflow-data-as-artifacts) from your Workflow Runs. Internally powered by the [@actions/artifact](https://github.com/actions/toolkit/tree/main/packages/artifact) package.
+See also [upload-artifact-s3](https://github.com/NinjaManatee/upload-artifact-s3).
 
-See also [upload-artifact](https://github.com/actions/upload-artifact).
-
-- [`@actions/download-artifact`](#actionsdownload-artifact)
-  - [v4 - What's new](#v4---whats-new)
-    - [Improvements](#improvements)
-    - [Breaking Changes](#breaking-changes)
+- [`download-artifact-s3`](#download-artifact-s3)
   - [Usage](#usage)
     - [Inputs](#inputs)
     - [Outputs](#outputs)
@@ -25,34 +16,12 @@ See also [upload-artifact](https://github.com/actions/upload-artifact).
   - [Limitations](#limitations)
     - [Permission Loss](#permission-loss)
 
-
-## v4 - What's new
-
-> [!IMPORTANT]
-> download-artifact@v4+ is not currently supported on GHES yet. If you are on GHES, you must use [v3](https://github.com/actions/download-artifact/releases/tag/v3).
-
-The release of upload-artifact@v4 and download-artifact@v4 are major changes to the backend architecture of Artifacts. They have numerous performance and behavioral improvements.
-
-For more information, see the [`@actions/artifact`](https://github.com/actions/toolkit/tree/main/packages/artifact) documentation.
-
-### Improvements
-
-1. Downloads are significantly faster, upwards of 90% improvement in worst case scenarios.
-2. Artifacts can be downloaded from other workflow runs and repositories when supplied with a PAT.
-
-### Breaking Changes
-
-1. On self hosted runners, additional [firewall rules](https://github.com/actions/toolkit/tree/main/packages/artifact#breaking-changes) may be required.
-2. Downloading artifacts that were created from `action/upload-artifact@v3` and below are not supported.
-
-For assistance with breaking changes, see [MIGRATION.md](docs/MIGRATION.md).
-
 ## Usage
 
 ### Inputs
 
 ```yaml
-- uses: actions/download-artifact@v4
+- uses: NinjaManatee/download-artifact-s3@main
   with:
     # Name of the artifact to download.
     # If unspecified, all artifacts for the run are downloaded.
@@ -104,7 +73,7 @@ Download to current working directory (`$GITHUB_WORKSPACE`):
 
 ```yaml
 steps:
-- uses: actions/download-artifact@v4
+- uses: NinjaManatee/download-artifact-s3@main
   with:
     name: my-artifact
 - name: Display structure of downloaded files
@@ -115,7 +84,7 @@ Download to a specific directory (also supports `~` expansion):
 
 ```yaml
 steps:
-- uses: actions/download-artifact@v4
+- uses: NinjaManatee/download-artifact-s3@main
   with:
     name: my-artifact
     path: your/destination/dir
@@ -142,7 +111,7 @@ Download all artifacts to the current working directory:
 
 ```yaml
 steps:
-- uses: actions/download-artifact@v4
+- uses: NinjaManatee/download-artifact-s3@main
 - name: Display structure of downloaded files
   run: ls -R
 ```
@@ -151,7 +120,7 @@ Download all artifacts to a specific directory:
 
 ```yaml
 steps:
-- uses: actions/download-artifact@v4
+- uses: NinjaManatee/download-artifact-s3@main
   with:
     path: path/to/artifacts
 - name: Display structure of downloaded files
@@ -162,7 +131,7 @@ To download them to the _same_ directory:
 
 ```yaml
 steps:
-- uses: actions/download-artifact@v4
+- uses: NinjaManatee/download-artifact-s3@main
   with:
     path: path/to/artifacts
     merge-multiple: true
@@ -193,7 +162,7 @@ jobs:
     - name: Create a File
       run: echo "hello from ${{ matrix.runs-on }}" > file-${{ matrix.runs-on }}.txt
     - name: Upload Artifact
-      uses: actions/upload-artifact@v4
+      uses: NinjaManatee/upload-artifact-s3@main
       with:
         name: my-artifact-${{ matrix.runs-on }}
         path: file-${{ matrix.runs-on }}.txt
@@ -202,7 +171,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download All Artifacts
-      uses: actions/download-artifact@v4
+      uses: NinjaManatee/download-artifact-s3@main
       with:
         path: my-artifact
         pattern: my-artifact-*
@@ -225,7 +194,7 @@ It may be useful to download Artifacts from other workflow runs, or even other r
 
 ```yaml
 steps:
-- uses: actions/download-artifact@v4
+- uses: NinjaManatee/download-artifact-s3@main
   with:
     name: my-other-artifact
     github-token: ${{ secrets.GH_PAT }} # token with actions:read permissions on target repo
@@ -246,7 +215,7 @@ If you must preserve permissions, you can `tar` all of your files together befor
   run: tar -cvf my_files.tar /path/to/my/directory
 
 - name: 'Upload Artifact'
-  uses: actions/upload-artifact@v4
+  uses: NinjaManatee/upload-artifact-s3@main
   with:
     name: my-artifact
     path: my_files.tar

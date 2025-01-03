@@ -1,9 +1,10 @@
 {
-  "name": "download-artifact",
+  "name": "download-artifact-s3",
   "version": "4.1.7",
-  "description": "Download an Actions Artifact from a workflow run",
+  "description": "Download an Actions Artifact from AWS S3 from a workflow run",
   "main": "dist/index.js",
   "scripts": {
+    "prepare": "npm run build",
     "build": "tsc",
     "release": "ncc build src/download-artifact.ts && git add -f dist/",
     "check-all": "concurrently \"npm:format-check\" \"npm:lint\" \"npm:build\"",
@@ -13,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/download-artifact.git"
+    "url": "git+https://github.com/NinjaManatee/download-artifact-s3.git"
   },
   "keywords": [
     "Actions",
@@ -24,13 +25,13 @@
   "author": "GitHub",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/actions/download-artifact/issues"
+    "url": "https://github.com/NinjaManatee/download-artifact-s3/issues"
   },
-  "homepage": "https://github.com/actions/download-artifact#readme",
+  "homepage": "https://github.com/NinjaManatee/download-artifact-s3#readme",
   "dependencies": {
-    "@actions/artifact": "^2.1.8",
     "@actions/core": "^1.10.1",
     "@actions/github": "^5.1.1",
+    "artifact-s3": "github:NinjaManatee/artifact-s3",
     "minimatch": "^9.0.3"
   },
   "devDependencies": {
